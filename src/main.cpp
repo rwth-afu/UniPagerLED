@@ -50,8 +50,6 @@ int main() {
     };
     
     client.start();
-    
-    server_thread.join();
-    
+
     return 0;
 }
