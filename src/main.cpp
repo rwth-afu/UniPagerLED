@@ -32,7 +32,7 @@ int main() {
     client.on_open=[&client]() {
         cout << "Client: Opened connection" << endl;
         
-        string message="Hello";
+        string message="GetVersion";
         cout << "Client: Sending message: \"" << message << "\"" << endl;
 
         auto send_stream=make_shared<WsClient::SendStream>();
