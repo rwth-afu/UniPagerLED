@@ -19,7 +19,7 @@ int main() {
     //Client: Sending close connection
     //Server: Closed connection 140184920260656 with status code 1000
     //Client: Closed connection with status code 1000
-    WsClient client("localhost:8055/");
+    WsClient client("localhost:8055");
     client.on_message=[&client](shared_ptr<WsClient::Message> message) {
         auto message_str=message->string();
         
