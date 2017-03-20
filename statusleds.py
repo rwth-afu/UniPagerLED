@@ -21,9 +21,14 @@ class Statusleds:
 		self.ws.close()
 	
 	def setled(self, led, status):
-		if led == -1:
-			print("Led -1 not present")
-		print("Setting led %d to %d" % (led, status))
+		if led == None:
+			print("Led not present")
+			return
+		if led < 0:
+			led = -led
+			print("Setting led %d to %d" % (led, not status))
+		else:
+			print("Setting led %d to %d" % (led, status))
 
 	def setstatus(self):
 		self.ws.send('"GetStatus"')
@@ -31,7 +36,11 @@ class Statusleds:
 		res = json.loads(sres)
 		print("Resp:")
 		print(json.dumps(res,indent=4))
-		status = res["Status"]
+		try:
+			status = res["Status"]
+		except KeyError:
+			print("Got error, ignoring")
+			return
 		self.setled(self.vled, status["connected"])
 		self.setled(self.txled, status["transmitting"])
 	
@@ -41,19 +50,19 @@ class Statusleds:
 			time.sleep(1)
 
 parser = argparse.ArgumentParser(description='Set status LEDs')
-parser.add_argument('--host', default='localhost',
+parser.add_argument('--hostname', default='localhost',
                     help='The host running RustPager')
-parser.add_argument('--port', '-p', default='8055',
+parser.add_argument('--port', default='8055',
                     help='The port RustPager is listening')
-parser.add_argument('--betrieb', '-b', dest='betrled', default=-1, type=int,
+parser.add_argument('--gpioRun', '-b', dest='betrled', default=None, type=int,
                     help='The led number of the "Betrieb" led')
-parser.add_argument('--verbindung', '-v', dest='verbled', default=-1, type=int,
+parser.add_argument('--gpioConn', dest='verbled', default=None, type=int,
                     help='The led number of the "Verbindung" led')
-parser.add_argument('--tx', '-t', dest='txled', default=-1, type=int,
+parser.add_argument('--gpioTX', dest='txled', default=None, type=int,
                     help='The led number of the "TX" led')
 
 args = parser.parse_args()
 print(args)
 
-with Statusleds("ws://%s:%s/" %(args.host, args.port), args.betrled, args.verbled, args.txled) as setter:
+with Statusleds("ws://%s:%s/" %(args.hostname, args.port), args.betrled, args.verbled, args.txled) as setter:
 	setter.loop()

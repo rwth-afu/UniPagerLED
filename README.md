@@ -6,7 +6,7 @@ A software that connects to the websocket interface of RustPager and controls fr
 * Connected to DAPNET-Core
 * Transmitting
 
-Configuration parameters on the command line should be:
+Configuration parameters on the command line are be:
 * Websocket Hostname (Default: localhost) --hostname
 * Websocket Port (Default: 8055) --port
 * GPIO Pin in Wiring Pi style for "Running LED"  --gpioRun
@@ -16,6 +16,5 @@ Configuration parameters on the command line should be:
 
 Websocket connection should be opened once and kept open. React on update comming from the UniPager. If connection is closed, reconnect.
 
-Libraries needed for C++ Program:
-sudo apt-get install libssl-dev
-sudo apt-get install libboost-all-dev
+Libraries needed for Python Program:
+* To be investigated
