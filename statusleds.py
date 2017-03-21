@@ -29,9 +29,11 @@ class Statusleds:
 			print("Setting led %d to %d" % (led, not status))
 		else:
 			print("Setting led %d to %d" % (led, status))
+	
+	def getstatus(self):
+		self.ws.send('"GetStatus"')
 
 	def setstatus(self):
-		self.ws.send('"GetStatus"')
 		sres = self.ws.recv()
 		res = json.loads(sres)
 		print("Resp:")
@@ -39,12 +41,13 @@ class Statusleds:
 		try:
 			status = res["Status"]
 		except KeyError:
-			print("Got error, ignoring")
+			print("Other message, ignoring")
 			return
 		self.setled(self.vled, status["connected"])
 		self.setled(self.txled, status["transmitting"])
 	
 	def loop(self):
+		self.getstatus()
 		while True:
 			self.setstatus()
 			time.sleep(1)
