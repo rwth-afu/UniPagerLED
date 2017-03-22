@@ -13,9 +13,12 @@ class Statusleds:
 		self.txled = txled
 		
 		GPIO.setmode(GPIO.BOARD)
-		GPIO.setup(self.bled, GPIO.OUT)
-		GPIO.setup(self.vled, GPIO.OUT)
-		GPIO.setup(self.txled, GPIO.OUT)
+		if not self.bled is None:
+			GPIO.setup(self.bled, GPIO.OUT)
+		if not self.vled is None:
+			GPIO.setup(self.vled, GPIO.OUT)
+		if not self.txled is None:
+			GPIO.setup(self.txled, GPIO.OUT)
 		
 		self.ws = websocket.create_connection(url)
 		
