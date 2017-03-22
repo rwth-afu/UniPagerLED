@@ -16,5 +16,5 @@ Configuration parameters on the command line are be:
 
 Websocket connection should be opened once and kept open. React on update comming from the UniPager. If connection is closed, reconnect.
 
-Libraries needed for Python Program:
-* To be investigated
+Packages needed for the Python Program:
+* sudo apt install python3 python3-websocket
