@@ -68,10 +68,10 @@ parser.add_argument('--hostname', default='localhost',
                     help='The host running RustPager')
 parser.add_argument('--port', default='8055',
                     help='The port RustPager is listening')
-parser.add_argument('--gpioRun', '-b', dest='betrled', default=None, type=int,
+parser.add_argument('--gpioRun', dest='betrled', default=None, type=int,
                     help='UniPager running')
 parser.add_argument('--gpioConn', dest='verbled', default=None, type=int,
-                    help='DAPNET connection ok" led')
+                    help='DAPNET connection ok')
 parser.add_argument('--gpioTX', dest='txled', default=None, type=int,
                     help='Transmitting')
 
