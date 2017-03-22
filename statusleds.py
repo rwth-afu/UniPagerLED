@@ -29,6 +29,7 @@ class Statusleds:
 	
 	def __exit__(self, exc_type, exc_value, traceback):
 		self.setled(self.bled, False)
+		GPIO.cleanup()
 		self.ws.close()
 	
 	def setled(self, led, status):
