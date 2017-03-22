@@ -4,13 +4,21 @@ import websocket
 import json
 import time
 import argparse
+import RPi.GPIO as GPIO
 
 class Statusleds:
 	def __init__(self, url, betrled, verbled, txled):
 		self.bled = betrled
 		self.vled = verbled
 		self.txled = txled
+		
+		GPIO.setmode(GPIO.BOARD)
+		GPIO.setup(self.bled, GPIO.OUT)
+		GPIO.setup(self.vled, GPIO.OUT)
+		GPIO.setup(self.txled, GPIO.OUT)
+		
 		self.ws = websocket.create_connection(url)
+		
 		self.setled(self.bled, True)
 	
 	def __enter__(self):
@@ -26,9 +34,9 @@ class Statusleds:
 			return
 		if led < 0:
 			led = -led
-			print("Setting led %d to %d" % (led, not status))
-		else:
-			print("Setting led %d to %d" % (led, status))
+			status = not status
+		print("Setting led %d to %d" % (led, status))
+		GPIO.output(led, status)
 	
 	def getstatus(self):
 		self.ws.send('"GetStatus"')
