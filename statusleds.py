@@ -69,11 +69,11 @@ parser.add_argument('--hostname', default='localhost',
 parser.add_argument('--port', default='8055',
                     help='The port RustPager is listening')
 parser.add_argument('--gpioRun', '-b', dest='betrled', default=None, type=int,
-                    help='The led number of the "Betrieb" led')
+                    help='UniPager running')
 parser.add_argument('--gpioConn', dest='verbled', default=None, type=int,
-                    help='The led number of the "Verbindung" led')
+                    help='DAPNET connection ok" led')
 parser.add_argument('--gpioTX', dest='txled', default=None, type=int,
-                    help='The led number of the "TX" led')
+                    help='Transmitting')
 
 args = parser.parse_args()
 print(args)
