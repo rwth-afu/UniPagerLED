@@ -4,6 +4,8 @@ import websocket
 import json
 import time
 import argparse
+import signal
+import sys
 import RPi.GPIO as GPIO
 
 class Statusleds:
@@ -12,6 +14,8 @@ class Statusleds:
 		self.vled = verbled
 		self.txled = txled
 		
+		self.ws = websocket.create_connection(url, timeout=60)
+		
 		GPIO.setmode(GPIO.BOARD)
 		if not self.bled is None:
 			GPIO.setup(self.bled, GPIO.OUT)
@@ -19,8 +23,6 @@ class Statusleds:
 			GPIO.setup(self.vled, GPIO.OUT)
 		if not self.txled is None:
 			GPIO.setup(self.txled, GPIO.OUT)
-		
-		self.ws = websocket.create_connection(url)
 		
 		self.setled(self.bled, True)
 	
@@ -62,7 +64,6 @@ class Statusleds:
 		self.getstatus()
 		while True:
 			self.setstatus()
-			time.sleep(1)
 
 parser = argparse.ArgumentParser(description='Set status LEDs')
 parser.add_argument('--hostname', default='localhost',
@@ -79,5 +80,27 @@ parser.add_argument('--gpioTX', dest='txled', default=None, type=int,
 args = parser.parse_args()
 print(args)
 
-with Statusleds("ws://%s:%s/" %(args.hostname, args.port), args.betrled, args.verbled, args.txled) as setter:
-	setter.loop()
+while True:
+	try:
+		with Statusleds("ws://%s:%s/" %(args.hostname, args.port), args.betrled, args.verbled, args.txled) as setter:
+			signal.signal(signal.SIGINT, lambda signal, frame: print("sigint"))
+			signal.signal(signal.SIGTERM, lambda signal, frame: print("sigterm"))
+
+			setter.loop()
+	except websocket._exceptions.WebSocketTimeoutException:
+		print("Timeout")
+	except websocket._exceptions.WebSocketConnectionClosedException:
+		print("Websocket closed")
+	except ConnectionRefusedError:
+		print("Connection Refused")
+	except InterruptedError:
+		print("Shutting down")
+		sys.exit(0)
+	
+	signal.signal(signal.SIGINT, lambda signal, frame: sys.exit(0))
+	signal.signal(signal.SIGTERM, lambda signal, frame: sys.exit(0))
+	
+	print("Waiting 10 seconds")
+	time.sleep(10)
+	print("Trying again")
+
