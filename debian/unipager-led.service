@@ -1,0 +1,9 @@
+[Unit]
+Description=UniPager LED controller
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/unipager-led.py --gpioRun 24 --gpioConn 26
+
+[Install]
+WantedBy=multi-user.target

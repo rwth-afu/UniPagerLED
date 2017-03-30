@@ -1,0 +1,15 @@
+Source:  unipager-led
+Section: hamradio
+Priority: standard
+Maintainer: RWTH Amateurfunkgruppe <rwth-afu@online.de>
+Build-Depends:
+  debhelper (>= 9), dh-systemd, dh-python, python3-all, python3-setuptools
+Standards-Version: 3.9.6
+Homepage: http://www.afu.rwth-aachen.de
+Vcs-Browser: https://github.com/rwth-afu/UniPagerLED
+Vcs-Git: git://github.com/rwth-afu/UniPagerLED.git
+
+Package: unipager-led
+Architecture: any
+Depends: ${python3:Depends}, python3-websocket, python3-rpi.gpio, ${misc:Depends}
+Description: UniPager LED controller
