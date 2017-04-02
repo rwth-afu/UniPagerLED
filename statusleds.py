@@ -78,13 +78,10 @@ parser.add_argument('--gpioTX', dest='txled', default=None, type=int,
                     help='Transmitting')
 
 args = parser.parse_args()
-print(args)
 
 while True:
 	try:
 		with Statusleds("ws://%s:%s/" %(args.hostname, args.port), args.betrled, args.verbled, args.txled) as setter:
-			signal.signal(signal.SIGINT, lambda signal, frame: print("sigint"))
-			signal.signal(signal.SIGTERM, lambda signal, frame: print("sigterm"))
 
 			setter.loop()
 	except websocket._exceptions.WebSocketTimeoutException:
@@ -93,14 +90,15 @@ while True:
 		print("Websocket closed")
 	except ConnectionRefusedError:
 		print("Connection Refused")
-	except InterruptedError:
+	except KeyboardInterrupt:
 		print("Shutting down")
 		sys.exit(0)
 	
-	signal.signal(signal.SIGINT, lambda signal, frame: sys.exit(0))
-	signal.signal(signal.SIGTERM, lambda signal, frame: sys.exit(0))
-	
 	print("Waiting 10 seconds")
-	time.sleep(10)
+	try:
+		time.sleep(10)
+	except KeyboardInterrupt:
+		print("Shutting down")
+		sys.exit(0)
 	print("Trying again")
 
