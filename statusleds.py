@@ -18,11 +18,11 @@ class Statusleds:
 		
 		GPIO.setmode(GPIO.BOARD)
 		if not self.bled is None:
-			GPIO.setup(self.bled, GPIO.OUT)
+			GPIO.setup(abs(self.bled), GPIO.OUT)
 		if not self.vled is None:
-			GPIO.setup(self.vled, GPIO.OUT)
+			GPIO.setup(abs(self.vled), GPIO.OUT)
 		if not self.txled is None:
-			GPIO.setup(self.txled, GPIO.OUT)
+			GPIO.setup(abs(self.txled), GPIO.OUT)
 		
 		self.setled(self.bled, True)
 	
