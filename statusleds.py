@@ -9,28 +9,28 @@ import sys
 import RPi.GPIO as GPIO
 
 class Statusleds:
-	def __init__(self, url, betrled, verbled, txled):
-		self.bled = betrled
-		self.vled = verbled
+	def __init__(self, url, runled, connled, txled):
+		self.runled = runled
+		self.connled = connled
 		self.txled = txled
 		
 		self.ws = websocket.create_connection(url, timeout=10)
 		
 		GPIO.setmode(GPIO.BOARD)
-		if not self.bled is None:
-			GPIO.setup(abs(self.bled), GPIO.OUT)
-		if not self.vled is None:
-			GPIO.setup(abs(self.vled), GPIO.OUT)
+		if not self.runled is None:
+			GPIO.setup(abs(self.runled), GPIO.OUT)
+		if not self.connled is None:
+			GPIO.setup(abs(self.connled), GPIO.OUT)
 		if not self.txled is None:
 			GPIO.setup(abs(self.txled), GPIO.OUT)
 		
-		self.setled(self.bled, True)
+		self.setled(self.runled, True)
 	
 	def __enter__(self):
 		return self
 	
 	def __exit__(self, exc_type, exc_value, traceback):
-		self.setled(self.bled, False)
+		self.setled(self.runled, False)
 		GPIO.cleanup()
 		self.ws.close()
 	
@@ -57,7 +57,7 @@ class Statusleds:
 		except KeyError:
 			print("Other message, ignoring")
 			return
-		self.setled(self.vled, status["connected"])
+		self.setled(self.connled, status["connected"])
 		self.setled(self.txled, status["transmitting"])
 	
 	def loop(self):
@@ -70,9 +70,9 @@ parser.add_argument('--hostname', default='localhost',
                     help='The host running RustPager, default localhost')
 parser.add_argument('--port', default='8055',
                     help='The port RustPager is listening, default 8055')
-parser.add_argument('--gpioRun', dest='betrled', default=None, type=int,
+parser.add_argument('--gpioRun', dest='runled', default=None, type=int,
                     help='UniPager running')
-parser.add_argument('--gpioConn', dest='verbled', default=None, type=int,
+parser.add_argument('--gpioConn', dest='connled', default=None, type=int,
                     help='DAPNET connection ok')
 parser.add_argument('--gpioTX', dest='txled', default=None, type=int,
                     help='Transmitting')
@@ -98,20 +98,20 @@ if not preset is None:
 				print("  %s: %s" %(t, presets[pr][t]))
 		sys.exit(0)
 	elif preset in presets:
-		betrled = presets[preset]["run"]
-		verbled = presets[preset]["conn"]
+		runled = presets[preset]["run"]
+		connled = presets[preset]["conn"]
 		txled = presets[preset]["tx"]
 	else:
 		print("Preset %s unknown" %preset)
 		sys.exit(1)
 else:
-	betrled = args.betrled
-	verbled = args.verbled
+	runled = args.runled
+	connled = args.connled
 	txled = args.txled
 
 while True:
 	try:
-		with Statusleds("ws://%s:%s/" %(args.hostname, args.port), betrled, verbled, txled) as setter:
+		with Statusleds("ws://%s:%s/" %(args.hostname, args.port), runled, connled, txled) as setter:
 
 			setter.loop()
 	except websocket._exceptions.WebSocketTimeoutException:
