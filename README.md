@@ -18,6 +18,8 @@ Configuration parameters on the command line are:
 
 The pin header numbers have top be used, not WiringPi Numbers.
 
+If no pin config is given it tries to guess the config based on the transmittertype supplied by the transmitter config. Currently, only the C9000 with the preset below is supported.
+
 # Common assigments:
 __RasPager9000:__
 * gpioTX: none
