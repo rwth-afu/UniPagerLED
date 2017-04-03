@@ -8,6 +8,14 @@ import signal
 import sys
 import RPi.GPIO as GPIO
 
+presets = {"c9000": {
+	"run": 24,
+	"conn": 26,
+	"tx": None
+}}
+
+presetconfigmap = {"C9000":"c9000"}
+
 class Statusleds:
 	def __init__(self, url, runled, connled, txled):
 		self.runled = runled
@@ -15,6 +23,18 @@ class Statusleds:
 		self.txled = txled
 		
 		self.ws = websocket.create_connection(url, timeout=10)
+		
+		if runled == connled == txled == None:
+			self.ws.send('"GetConfig"')
+			sconfig = self.ws.recv()
+			config = json.loads(sconfig)
+			print("Config:")
+			print(json.dumps(config,indent=4))
+			transmitter = config["Config"]["transmitter"]
+			if transmitter in presetconfigmap:
+				self.runled = presets[presetconfigmap[transmitter]]["run"]
+				self.connled = presets[presetconfigmap[transmitter]]["conn"]
+				self.txled = presets[presetconfigmap[transmitter]]["tx"]
 		
 		GPIO.setmode(GPIO.BOARD)
 		if not self.runled is None:
@@ -80,12 +100,6 @@ parser.add_argument('--preset', dest='preset', default=None, type=str,
                     help='Preset, help for help')
 
 args = parser.parse_args()
-
-presets = {"c9000": {
-	"run": 24,
-	"conn": 26,
-	"tx": None
-}}
 
 preset = args.preset
 
