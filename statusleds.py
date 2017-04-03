@@ -67,21 +67,51 @@ class Statusleds:
 
 parser = argparse.ArgumentParser(description='Set status LEDs')
 parser.add_argument('--hostname', default='localhost',
-                    help='The host running RustPager')
+                    help='The host running RustPager, default localhost')
 parser.add_argument('--port', default='8055',
-                    help='The port RustPager is listening')
+                    help='The port RustPager is listening, default 8055')
 parser.add_argument('--gpioRun', dest='betrled', default=None, type=int,
                     help='UniPager running')
 parser.add_argument('--gpioConn', dest='verbled', default=None, type=int,
                     help='DAPNET connection ok')
 parser.add_argument('--gpioTX', dest='txled', default=None, type=int,
                     help='Transmitting')
+parser.add_argument('--preset', dest='preset', default=None, type=str,
+                    help='Preset, help for help')
 
 args = parser.parse_args()
 
+presets = {"c9000": {
+	"run": 24,
+	"conn": 26,
+	"tx": None
+}}
+
+preset = args.preset
+
+if not preset is None:
+	if preset == "help":
+		print("Presets:")
+		for pr in presets:
+			print("%s:" %pr)
+			for t in ["run","conn","tx"]:
+				print("  %s: %s" %(t, presets[pr][t]))
+		sys.exit(0)
+	elif preset in presets:
+		betrled = presets[preset]["run"]
+		verbled = presets[preset]["conn"]
+		txled = presets[preset]["tx"]
+	else:
+		print("Preset %s unknown" %preset)
+		sys.exit(1)
+else:
+	betrled = args.betrled
+	verbled = args.verbled
+	txled = args.txled
+
 while True:
 	try:
-		with Statusleds("ws://%s:%s/" %(args.hostname, args.port), args.betrled, args.verbled, args.txled) as setter:
+		with Statusleds("ws://%s:%s/" %(args.hostname, args.port), betrled, verbled, txled) as setter:
 
 			setter.loop()
 	except websocket._exceptions.WebSocketTimeoutException:
