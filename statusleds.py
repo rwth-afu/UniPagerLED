@@ -8,6 +8,8 @@ import signal
 import sys
 import RPi.GPIO as GPIO
 
+DEBUG = False
+
 presets = {"c9000": {
 	"run": 24,
 	"conn": 26,
@@ -15,6 +17,10 @@ presets = {"c9000": {
 }}
 
 presetconfigmap = {"C9000":"c9000"}
+
+def debug(string):
+	if DEBUG:
+		print(string)
 
 class Statusleds:
 	def __init__(self, url, runled, connled, txled):
@@ -28,8 +34,8 @@ class Statusleds:
 			self.ws.send('"GetConfig"')
 			sconfig = self.ws.recv()
 			config = json.loads(sconfig)
-			print("Config:")
-			print(json.dumps(config,indent=4))
+			debug("Config:")
+			debug(json.dumps(config,indent=4))
 			transmitter = config["Config"]["transmitter"]
 			if transmitter in presetconfigmap:
 				self.runled = presets[presetconfigmap[transmitter]]["run"]
@@ -56,12 +62,12 @@ class Statusleds:
 	
 	def setled(self, led, status):
 		if led == None:
-			print("Led not present")
+			debug("Led not present")
 			return
 		if led < 0:
 			led = -led
 			status = not status
-		print("Setting led %d to %d" % (led, status))
+		debug("Setting led %d to %d" % (led, status))
 		GPIO.output(led, status)
 	
 	def getstatus(self):
@@ -70,12 +76,12 @@ class Statusleds:
 	def setstatus(self):
 		sres = self.ws.recv()
 		res = json.loads(sres)
-		print("Resp:")
-		print(json.dumps(res,indent=4))
+		debug("Resp:")
+		debug(json.dumps(res,indent=4))
 		try:
 			status = res["Status"]
 		except KeyError:
-			print("Other message, ignoring")
+			debug("Other message, ignoring")
 			return
 		self.setled(self.connled, status["connected"])
 		self.setled(self.txled, status["transmitting"])
@@ -98,8 +104,13 @@ parser.add_argument('--gpioTX', dest='txled', default=None, type=int,
                     help='Transmitting')
 parser.add_argument('--preset', dest='preset', default=None, type=str,
                     help='Preset, help for help')
+parser.add_argument('--debug', dest='debug', action='store_true',
+                    help='Enable debug')
 
 args = parser.parse_args()
+
+DEBUG |= args.debug
+if DEBUG: print("Debug enabled")
 
 preset = args.preset
 
