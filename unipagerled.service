@@ -1,0 +1,9 @@
+[Unit]
+Description=UniPager LED status display
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/unipagerled.py --config /etc/unipagerledconfig.py
+
+[Install]
+WantedBy=multi-user.target
