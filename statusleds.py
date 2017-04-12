@@ -104,6 +104,8 @@ parser.add_argument('--gpioTX', dest='txled', default=None, type=int,
                     help='Transmitting')
 parser.add_argument('--preset', dest='preset', default=None, type=str,
                     help='Preset, help for help')
+parser.add_argument('--config', dest='config', default=None, type=str,
+                    help='Config file')
 parser.add_argument('--debug', dest='debug', action='store_true',
                     help='Enable debug')
 
@@ -112,7 +114,25 @@ args = parser.parse_args()
 DEBUG |= args.debug
 if DEBUG: print("Debug enabled")
 
+config = args.config
 preset = args.preset
+
+hostname = args.hostname
+port = args.port
+runled = args.runled
+connled = args.connled
+txled = args.txled
+
+if not config is None:
+	try:
+		with open(config) as f:
+			exec(f.read())
+	except FileNotFoundError:
+		print("Configfile %s not found" %config)
+		sys.exit(1)
+	except SyntaxError:
+		print("Syntax error in configfile %s" %config)
+		sys.exit(1)
 
 if not preset is None:
 	if preset == "help":
@@ -129,15 +149,10 @@ if not preset is None:
 	else:
 		print("Preset %s unknown" %preset)
 		sys.exit(1)
-else:
-	runled = args.runled
-	connled = args.connled
-	txled = args.txled
 
 while True:
 	try:
-		with Statusleds("ws://%s:%s/" %(args.hostname, args.port), runled, connled, txled) as setter:
-
+		with Statusleds("ws://%s:%s/" %(hostname, port), runled, connled, txled) as setter:
 			setter.loop()
 	except websocket._exceptions.WebSocketTimeoutException:
 		print("Timeout")

@@ -1,0 +1,22 @@
+# The config is just a python script which will be included
+
+# The hostname, default localhost
+#hostname = "localhost"
+
+# The port, default 8055
+#port = 8055
+
+# Led indicating if UniPager is running
+#runled = 1
+
+# Led indicating if the DAPNET connection is ok
+#connled = 2
+
+# Led indicating if UniPager is transmitting
+#txled = 3
+
+# The preset to use, see statusleds.py --preset help for a list
+#preset = "c9000"
+
+# If no led is given at all, the config is tried to be derived from
+# the Transmitter config of the UniPager.

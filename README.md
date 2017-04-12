@@ -15,6 +15,8 @@ Configuration parameters on the command line are:
   * The GPIOs can be inverted to be flexible if the LEDs common Pin is Ground or 3.3V by putting a __-__ in front of the pin number; e.g. --gpioTX -29
 * Presets for the LEDs for well known hardware --preset
   * --preset help gives a list of all known presets
+* A config file --config
+  * See comments in config.py.example
 
 The pin header numbers have top be used, not WiringPi Numbers.
 
