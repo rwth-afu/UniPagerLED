@@ -22,12 +22,12 @@ The pin header numbers have top be used, not WiringPi Numbers.
 
 If no pin config is given it tries to guess the config based on the transmittertype supplied by the transmitter config. Currently, only the C9000 with the preset below is supported.
 
-UniPagerLED can be installed by running ''sudo ./install.sh''. That will install
+UniPagerLED can be installed by running `sudo ./install.sh`. That will install
 * unipagerled.py to /usr/local/bin
 * config.py.example to /etc/unipagerledconfig.py
 * unipagerled.service to /usr/local/lib/systemd/system/unipagerled.service
 
-UniPagerLED can then be enabled with ''systemctl enable unipagerled'' and started with ''systemctl start unipagerled''. The configuration goes into ''/etc/unipagerledconfig.py''.
+UniPagerLED can then be enabled with `systemctl enable unipagerled` and started with `systemctl start unipagerled`. The configuration goes into `/etc/unipagerledconfig.py`.
 
 # Common assigments:
 __RasPager9000:__
