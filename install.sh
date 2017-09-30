@@ -12,5 +12,5 @@ systemctl enable unipagerled.service
 
 echo "Install completed. Edit /etc/unipagerled.py according to your needs and run"
 echo "sudo systemctl restart unipagerled.service"
-echo "to make your changed active."
+echo "to make your changes active."
 
