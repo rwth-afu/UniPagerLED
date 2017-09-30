@@ -18,7 +18,7 @@ Configuration parameters on the command line are:
 * A config file --config
   * See comments in config.py.example
 
-The pin header numbers have top be used, not WiringPi Numbers.
+**The pin header numbers have to be used, __not__ WiringPi Numbers.**
 
 If no pin config is given it tries to guess the config based on the transmittertype supplied by the transmitter config. Currently, only the C9000 with the preset below is supported.
 
