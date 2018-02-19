@@ -80,11 +80,22 @@ class Statusleds:
 		debug(json.dumps(res,indent=4))
 		try:
 			status = res["Status"]
+			self.setled(self.connled, status["connected"])
+			self.setled(self.txled, status["transmitting"])
 		except KeyError:
 			debug("Other message, ignoring")
-			return
-		self.setled(self.connled, status["connected"])
-		self.setled(self.txled, status["transmitting"])
+#			return
+		try:
+			status = res["StatusUpdate"][0]
+			if status == "connected":
+				self.setled(self.connled, res["StatusUpdate"][1])
+			elif status == "transmitting":
+				self.setled(self.txled, res["StatusUpdate"][1])
+			debug("StatusUpdate:")
+			debug(json.dumps(res["StatusUpdate"][1],indent=4))
+		except KeyError:
+			debug("Other message, ignoring")
+#                       return
 	
 	def loop(self):
 		self.getstatus()
